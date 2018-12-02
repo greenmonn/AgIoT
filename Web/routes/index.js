@@ -41,7 +41,7 @@ const parseImage = (data) => {
         for (let j = 0; j < cellSize; j++) {
             const g = bytes[i * cellSize + j];
 
-            png.setPixel(j, i, [g, g, g]);
+            png.setPixel(cellSize - 1 - j, cellSize - 1 - i, [g, g, g]);
         }
     }
 
@@ -50,7 +50,7 @@ const parseImage = (data) => {
 
 const getImageCell = (data) => {
     return {
-        number: data['number'],
+        number: n * n - 1 - data['number'],
         image: parseImage(data['image'])
     }
 };
