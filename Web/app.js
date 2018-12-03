@@ -1,10 +1,12 @@
+const net = require('net');
+const request = require('request');
 
-var createError = require('http-errors');
-var express = require('express');
+const createError = require('http-errors');
+const express = require('express');
 
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
 const http = require('http');
 const debug = require('debug')('web:server');
@@ -12,7 +14,7 @@ const debug = require('debug')('web:server');
 const session = require('express-session');
 const sessionStore = new session.MemoryStore();
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,7 +22,7 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -30,7 +32,7 @@ app.use(session({
     secret: 'keyboard cat',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: {secure: false}
 }));
 
 /**
@@ -49,16 +51,16 @@ const indexRouter = require('./routes/index')(sessionStore, io);
 
 app.use('/', indexRouter);
 
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+    next(createError(404));
 });
 
-app.use(function(err, req, res, next) {
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+    res.locals.message = err.message;
+    res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  res.status(err.status || 500);
-  res.render('error');
+    res.status(err.status || 500);
+    res.render('error');
 });
 
 /**
@@ -76,6 +78,27 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+const TCPserver = net.createServer((socket) => {
+    socket.write('Echo server\r\n');
+    socket.on('data', function (data) {
+        const textChunk = data.toString('utf8');
+        socket.write(textChunk);
+
+        request.post('http://localhost:8080/api/image',
+            {
+                form: {
+                    n: 0,
+                    c: 'a'.repeat(200)
+                }
+            });
+    });
+
+}).on('error', (err) => {
+    throw err;
+});
+
+TCPserver.listen(1337, '0.0.0.0');
+
 function normalizePort(val) {
     const port = parseInt(val, 10);
 
@@ -89,6 +112,7 @@ function normalizePort(val) {
 
     return false;
 }
+
 // named pipe
 
 /**

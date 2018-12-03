@@ -34,6 +34,10 @@ const parseHexString = (str) => {
 };
 
 const parseImage = (data) => {
+    if (!data) {
+        return null;
+    }
+
     const bytes = parseHexString(data);
 
     let png = new PNGlib(cellSize, cellSize, cellSize * cellSize);
@@ -41,7 +45,7 @@ const parseImage = (data) => {
         for (let j = 0; j < cellSize; j++) {
             const g = bytes[i * cellSize + j];
 
-            png.setPixel(cellSize - 1 - j, cellSize - 1 - i, [g, g, g]);
+            png.setPixel(j, i, [g, g, g]);
         }
     }
 
@@ -50,7 +54,7 @@ const parseImage = (data) => {
 
 const getImageCell = (data) => {
     return {
-        number: n * n - 1 - data['number'],
+        number: data['number'],
         image: parseImage(data['image'])
     }
 };
@@ -96,9 +100,11 @@ module.exports = (sessionStore, io) => {
     });
 
     router.post('/api/image', async function (req, res) {
+        console.log(req.body);
+
         let changedCell = await getImageCell({
-            number: req.body['number'],
-            image: req.body['cell']
+            number: req.body['n'],
+            image: req.body['c']
         });
 
         await updateCell(changedCell);

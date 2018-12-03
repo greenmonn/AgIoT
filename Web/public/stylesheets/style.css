@@ -16,8 +16,8 @@ table {
 td {
     position: relative;
     display: inline-block;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
     padding: 0;
     margin: 0;
     background: black;
@@ -47,10 +47,13 @@ body {
 }
 
 .image {
+    width: 800px;
     margin-top: 50px;
 }
 
 .description {
+    width: 340px;
+
     margin-top: 50px;
     background-color: lightgray;
 

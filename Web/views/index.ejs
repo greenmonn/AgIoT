@@ -38,10 +38,10 @@
                 Update count: <span id="update_count">0</span>
             </li>
             <li>
-                Update period: <span id="update_period">-</span>
+                Update period: <span id="update_period">-</span> ms
             </li>
             <li>
-                Average update period: <span id="average_update_period">-</span>
+                Average update period: <span id="average_update_period">-</span> ms
             </li>
         </ul>
     </div>
@@ -50,10 +50,9 @@
 <script src="/socket.io/socket.io.js"></script>
 <script>
     const socket = io();
-    const date = new Date();
 
     let updateCount = 0;
-    let timestamp = date.getTime();
+    let timestamp = (new Date).getTime();
     let sumUpdatePeriod = 0;
 
     socket.on('updateCell', function (cell) {
@@ -65,15 +64,15 @@
         $("#changed_cell_number").text(cell.number);
         $("#update_count").text(++updateCount);
 
-        let currentTime = date.getTime();
+        let currentTime = (new Date).getTime();
         let period = currentTime - timestamp;
 
         sumUpdatePeriod += period
 
         timestamp = currentTime;
 
-        $("#update_period").text(period);
-        $("#average_update_period").text(sumUpdatePeriod / updateCount);
+        $("#update_period").text(period.toFixed(2));
+        $("#average_update_period").text((sumUpdatePeriod / updateCount).toFixed(2));
     })
 </script>
 
