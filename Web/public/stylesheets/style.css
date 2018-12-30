@@ -24,6 +24,10 @@ td {
     background-size: cover;
 }
 
+td > div {
+    height: 42px;
+}
+
 body {
     margin: 0;
     padding: 0;
