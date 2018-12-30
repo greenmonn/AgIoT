@@ -20,8 +20,8 @@
 
                 <td id="cell-<%= number %>"
                         <% if (imageCells[number]) { %>
-                    style="background-image: url(<%= imageCells[number] %>)">
-                    <% } %>
+                    style="background-image: url(<%= imageCells[number] %>)"
+                    <% } %>><div></div>
                 </td>
 
                 <% } %>
@@ -54,12 +54,21 @@
     let updateCount = 0;
     let timestamp = (new Date).getTime();
     let sumUpdatePeriod = 0;
+    let prevNumber = null;
 
     socket.on('updateCell', function (cell) {
         const $cell = $("#cell-" + cell.number);
+        const $highlight = $("#cell-" + cell.number + " > div");
 
         $cell.css("background-image",
             `url("${cell.image}")`)
+
+
+        $highlight.css("border", "1px solid red");
+        setTimeout(function() {
+            $highlight.css("border", "0px");
+        }, 300);
+
 
         $("#changed_cell_number").text(cell.number);
         $("#update_count").text(++updateCount);

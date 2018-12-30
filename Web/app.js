@@ -78,17 +78,37 @@ server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
+function toHexString(byteArray) {
+    return Array.from(byteArray, function(byte) {
+        return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+    }).join('')
+}
+
 const TCPserver = net.createServer((socket) => {
     socket.write('Echo server\r\n');
     socket.on('data', function (data) {
         const textChunk = data.toString('utf8');
         socket.write(textChunk);
 
+        const hex = toHexString(data);
+
+        console.log(data.length);
+        console.log(data[0]);
+        console.log(data[101]);
+
         request.post('http://localhost:8080/api/image',
             {
                 form: {
-                    n: 0,
-                    c: 'a'.repeat(200)
+                    n: data[0],
+                    c: hex.slice(2, 202)
+                }
+            });
+
+        request.post('http://localhost:8080/api/image',
+            {
+                form: {
+                    n: data[101],
+                    c: hex.slice(204, 404)
                 }
             });
     });

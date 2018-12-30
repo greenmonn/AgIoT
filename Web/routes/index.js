@@ -39,6 +39,7 @@ const parseImage = (data) => {
     }
 
     const bytes = parseHexString(data);
+    // const bytes = data;
 
     let png = new PNGlib(cellSize, cellSize, cellSize * cellSize);
     for (let i = 0; i < cellSize; i++) {
@@ -83,6 +84,18 @@ module.exports = (sessionStore, io) => {
         io.emit('broadcast', { for: 'everyone' });
 
         res.render('index', {
+            imageCells: cells ? cells : [],
+            num_row: n,
+            num_col: n
+        });
+    });
+
+    router.get('/new', function (req, res) {
+        const cells = cache.get('cells');
+
+        io.emit('broadcast', { for: 'everyone' });
+
+        res.render('index_new', {
             imageCells: cells ? cells : [],
             num_row: n,
             num_col: n
